@@ -27,6 +27,7 @@ jobs:
       - name: Get Adam's generator
         uses: actions/checkout@v2
         with:
+          github_token: ${{ secrets.EZROBOT_PAT }}
           repository: adamwojs/ezplatform-bundle-generator
           path: .generator
 
