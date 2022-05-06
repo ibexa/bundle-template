@@ -37,6 +37,11 @@ jobs:
           php composer-setup.php
           php composer.phar install -d .generator
 
+      - name: "Apply repository labels"
+        uses: micnncim/action-label-syncer@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       # Cleanup project
       - name: Cleanup
         run: |
