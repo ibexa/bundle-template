@@ -1,10 +1,10 @@
-| Question                                  | Answer
-| ---------------------------------------- | ------------------
-| **JIRA issue**                          | [EZEE-XXXXX](https://issues.ibexa.co/browse/EZEE-XXXXX)
-| **Type**                                   | feature/bug/improvement
-| **Target eZ Platform version** | `v3.x` - please update `x` accordingly
-| **BC breaks**                          | yes/no
-| **Doc needed**                       | yes/no
+| Question                       | Answer                                                |
+|--------------------------------|-------------------------------------------------------|
+| **JIRA issue**                 | [IBX-XXXXX](https://issues.ibexa.co/browse/IBX-XXXXX) |
+| **Type**                       | feature/bug/improvement                               |
+| **Target eZ Platform version** | `v4.x` - please update `x` accordingly                |
+| **BC breaks**                  | yes/no                                                |
+| **Doc needed**                 | yes/no                                                |
 
 <!-- Replace this comment with Pull Request description -->
 
