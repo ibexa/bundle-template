@@ -19,16 +19,16 @@ jobs:
       - name: Setup PHP Action
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 7.3
+          php-version: 7.4
           coverage: none
           extensions: pdo_sqlite, gd
           tools: cs2pr
 
-      - name: Get Adam's generator
+      - name: Get bundle generator
         uses: actions/checkout@v2
         with:
           github_token: ${{ secrets.EZROBOT_PAT }}
-          repository: adamwojs/ezplatform-bundle-generator
+          repository: ibexa/bundle-generator
           path: .generator
 
       - name: "Install composer and dependencies"
@@ -56,8 +56,8 @@ jobs:
           find . -type f -exec sed -i '/#REMOVE-ON-CLEANUP#/d' {} +
 
           # Run generator
-          echo Running generator with: php .generator/bin/ezplatform-bundle-generator $SAFE_NAME $SAFE_NAME-dir --vendor-name=ibexa --vendor-namespace=Ibexa --bundle-name=$CC_NAME --skeleton-name=ibexa-experience
-          php .generator/bin/ezplatform-bundle-generator $SAFE_NAME $SAFE_NAME-dir --vendor-name=ibexa --vendor-namespace=Ibexa --bundle-name=$CC_NAME --skeleton-name=ibexa-experience
+          echo Running generator with: php .generator/bin/ibexa-bundle-generator $SAFE_NAME $SAFE_NAME-dir --vendor-name=ibexa --vendor-namespace=Ibexa --bundle-name=$CC_NAME --skeleton-name=ibexa-ee
+          php .generator/bin/ibexa-bundle-generator $SAFE_NAME $SAFE_NAME-dir --vendor-name=ibexa --vendor-namespace=Ibexa --bundle-name=$CC_NAME --skeleton-name=ibexa-ee
 
           # Move content
           cp -R $SAFE_NAME-dir/* .
