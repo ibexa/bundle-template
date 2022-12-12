@@ -11,13 +11,13 @@ jobs:
   cs-fix:
     if: github.event.repository.name != 'repo-template'
     name: Run code style check
-    runs-on: "ubuntu-20.04"
+    runs-on: "ubuntu-22.04"
     strategy:
       matrix:
         php:
           - '8.0'
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Setup PHP Action
         uses: shivammathur/setup-php@v2
@@ -27,7 +27,17 @@ jobs:
           extensions: 'pdo_sqlite, gd'
           tools: cs2pr
 
-      - uses: "ramsey/composer-install@v1"
+      # Only for packages that are private - uncomment if needed
+      # - name: Add composer keys for private packagist
+      #   run: |
+      #     composer config http-basic.updates.ibexa.co $SATIS_NETWORK_KEY $SATIS_NETWORK_TOKEN
+      #     composer config github-oauth.github.com $TRAVIS_GITHUB_TOKEN
+      #   env:
+      #     SATIS_NETWORK_KEY: ${{ secrets.SATIS_NETWORK_KEY }}
+      #     SATIS_NETWORK_TOKEN: ${{ secrets.SATIS_NETWORK_TOKEN }}
+      #     TRAVIS_GITHUB_TOKEN: ${{ secrets.TRAVIS_GITHUB_TOKEN }}
+
+      - uses: ramsey/composer-install@v2
         with:
           dependency-versions: "highest"
 
@@ -37,7 +47,7 @@ jobs:
   tests:
     if: github.event.repository.name != 'repo-template'
     name: Tests
-    runs-on: "ubuntu-20.04"
+    runs-on: "ubuntu-22.04"
     timeout-minutes: 10
 
     strategy:
@@ -47,9 +57,10 @@ jobs:
           - '7.4'
           - '8.0'
           - '8.1'
+          - '8.2'
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Setup PHP Action
         uses: shivammathur/setup-php@v2
@@ -69,7 +80,7 @@ jobs:
       #     SATIS_NETWORK_TOKEN: ${{ secrets.SATIS_NETWORK_TOKEN }}
       #     TRAVIS_GITHUB_TOKEN: ${{ secrets.TRAVIS_GITHUB_TOKEN }}
 
-      - uses: "ramsey/composer-install@v1"
+      - uses: ramsey/composer-install@v2
         with:
           dependency-versions: "highest"
           composer-options: "${{ matrix.composer_options }}"
