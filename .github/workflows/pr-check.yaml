@@ -10,5 +10,5 @@ on:
 
 jobs:
   test-base-branch:
-    if: github.event.repository.name != 'repo-template'
+    if: github.event.repository.name != 'bundle-template'
     uses: ibexa/gh-workflows/.github/workflows/pr-check.yml@main

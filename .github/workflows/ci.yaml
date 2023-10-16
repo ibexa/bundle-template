@@ -9,7 +9,7 @@ on:
 
 jobs:
   cs-fix:
-    if: github.event.repository.name != 'repo-template'
+    if: github.event.repository.name != 'bundle-template'
     name: Run code style check
     runs-on: "ubuntu-22.04"
     strategy:
@@ -45,7 +45,7 @@ jobs:
         run: composer run-script check-cs -- --format=checkstyle | cs2pr
 
   tests:
-    if: github.event.repository.name != 'repo-template'
+    if: github.event.repository.name != 'bundle-template'
     name: Tests
     runs-on: "ubuntu-22.04"
     timeout-minutes: 10
