@@ -10,6 +10,8 @@ jobs:
     name: Template Cleanup
     runs-on: ubuntu-latest
     if: github.event.repository.name != 'bundle-template'
+    permissions:
+      contents: write
     steps:
 
       # Check out current repository
@@ -27,7 +29,7 @@ jobs:
       - name: Get bundle generator
         uses: actions/checkout@v2
         with:
-          token: ${{ secrets.EZROBOT_PAT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           repository: ibexa/bundle-generator
           path: .generator
 
@@ -37,11 +39,6 @@ jobs:
           php composer-setup.php
           php composer.phar install -d .generator
 
-      - name: "Apply repository labels"
-        uses: micnncim/action-label-syncer@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       # Cleanup project
       - name: Cleanup
         run: |
@@ -49,23 +46,24 @@ jobs:
           export LANG=C
           # Prepare variables
           NAME="${GITHUB_REPOSITORY##*/}"
-          ACTOR=$(echo $GITHUB_ACTOR | tr '[:upper:]' '[:lower:]')
-          SAFE_NAME=$(echo $NAME | sed 's/[^a-zA-Z0-9]//g' | tr '[:upper:]' '[:lower:]')
-          SAFE_ACTOR=$(echo $ACTOR | sed 's/[^a-zA-Z0-9]//g' | tr '[:upper:]' '[:lower:]')
+          ACTOR=$(echo $GITHUB_ACTOR)
+          PACKAGE_NAME=$(echo $NAME | sed 's/[^a-zA-Z0-9]//g' | tr '[:upper:]' '[:lower:]')
+          VENDOR_NAME=$(echo $ACTOR | sed 's/[^a-zA-Z0-9]//g' | tr '[:upper:]' '[:lower:]')
+          VENDOR_NAMESPACE=$(echo $ACTOR | sed 's/\<./\U&/g' | sed 's/[^a-zA-Z0-9]//g')
 
           # Converts repository name to UpperCamelCase (if separated by "-")
           _temp=(${NAME//-/ })
-          CC_NAME=$(printf %s "${_temp[@]^}")
-
+          BUNDLE_NAME=$(printf %s "${_temp[@]^}")
+          
           # Remove lines marked with #REMOVE-ON-CLEANUP#
           find . -type f -exec sed -i '/#REMOVE-ON-CLEANUP#/d' {} +
 
           # Run generator
-          echo Running generator with: php .generator/bin/ibexa-bundle-generator $SAFE_NAME $SAFE_NAME-dir --vendor-name=ibexa --vendor-namespace=Ibexa --bundle-name=$CC_NAME --skeleton-name=ibexa-ee
-          php .generator/bin/ibexa-bundle-generator $SAFE_NAME $SAFE_NAME-dir --vendor-name=ibexa --vendor-namespace=Ibexa --bundle-name=$CC_NAME --skeleton-name=ibexa-ee
+          echo Running generator with: php .generator/bin/ibexa-bundle-generator $PACKAGE_NAME $PACKAGE_NAME-dir --vendor-name=$VENDOR_NAME --vendor-namespace=$VENDOR_NAMESPACE --bundle-name=$BUNDLE_NAME --skeleton-name=extension
+          php .generator/bin/ibexa-bundle-generator $PACKAGE_NAME $PACKAGE_NAME-dir --vendor-name=$VENDOR_NAME --vendor-namespace=$VENDOR_NAMESPACE --bundle-name=$BUNDLE_NAME --skeleton-name=extension
 
           # Move content
-          cp -R $SAFE_NAME-dir/* .
+          cp -R $PACKAGE_NAME-dir/* .
 
           # Cleanup
           rm -rf \
@@ -73,7 +71,7 @@ jobs:
             .github/template-cleanup \
             .github/workflows/template-cleanup.yml \
             .generator composer-setup.php composer.phar \
-            $SAFE_NAME-dir
+            $PACKAGE_NAME-dir
       # Commit modified files
       - name: Commit files
         run: |
