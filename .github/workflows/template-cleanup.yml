@@ -62,6 +62,9 @@ jobs:
           echo Running generator with: php .generator/bin/ibexa-bundle-generator $PACKAGE_NAME $PACKAGE_NAME-dir --vendor-name=$VENDOR_NAME --vendor-namespace=$VENDOR_NAMESPACE --bundle-name=$BUNDLE_NAME --skeleton-name=extension
           php .generator/bin/ibexa-bundle-generator $PACKAGE_NAME $PACKAGE_NAME-dir --vendor-name=$VENDOR_NAME --vendor-namespace=$VENDOR_NAMESPACE --bundle-name=$BUNDLE_NAME --skeleton-name=extension
 
+          # Remove ibexa/bundle-template workflows 
+          rm -rf .github
+
           # Move content
           cp -R $PACKAGE_NAME-dir/* .
 
